@@ -1,25 +1,25 @@
+# -*- coding: utf-8 -*-
+
 import random
 
 # colors
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+    CHAR = '\033[00m\033[5m\033[35m'
+    BG = '\033[00m\033[90m'
+    BORDER = '\033[00m\033[31m'
+    ERR = '\033[00m'
+    WATER = '\033[00m\033[34m'
 
 # settings
-wall_char = "#"
+wall_char = "▒"
 blank_char = " "
-fill_char = "."
+fill_char = "█"
 player_char = "@"
 border_char = "%"
-x_dim = 50
-y_dim = 50
+water_char = "▓"
+water_edge_char = "░"
+x_dim = 204
+y_dim = 60
 
 
 def print_arena(a):
@@ -27,67 +27,109 @@ def print_arena(a):
         outline = ""
         for square in line:
             if square == wall_char:
-                outline += bcolors.WARNING + str(square)
+                outline += bcolors.BG + str(square)
             elif square == fill_char:
-                outline += bcolors.OKGREEN + str(square)
+                outline += bcolors.BG + str(square)
             elif square == player_char:
-                outline += bcolors.OKBLUE + str(square)
+                outline += bcolors.CHAR + str(square)
             elif square == border_char:
-                outline += bcolors.FAIL + str(square)
+                outline += bcolors.BORDER + str(square)
+            elif square == water_char:
+                outline += bcolors.WATER + str(square)
             else:
-                outline += bcolors.OKCYAN + str(square)
+                outline += bcolors.ERR + str(square)
         print(outline)
 
-def gen_arena(input):
-    init_x = random.randint(0, len(input[0]) - 1)
-    init_y = random.randint(0, len(input) - 1)
-    squares = len(input) * len(input[0])
+def gen_arena(board):
+    # Caves
+    for x in range(20):
+        init_x = random.randint(1, len(board[0]) - 2)
+        init_y = random.randint(1, len(board) - 2)
+        squares = len(board) * len(board[0])
 
-    # Pathing 1
-    mod_count = 1
-    target_x = init_x
-    target_y = init_y
-    while mod_count < squares*2:
-        mod_count += 1
-        input[target_y][target_x] = blank_char
-        seed = random.randint(1, 100)
+        
+        mod_count = 1
+        target_x = init_x
+        target_y = init_y
+        while mod_count < 800:
+            mod_count += 1
+            board[target_y][target_x] = blank_char
+            seed = random.randint(1, 100)
 
-        if (seed > 50 and seed <= 62.5) and target_x < len(input[0]) - 1:
-            target_x = target_x + 1
-        if (seed > 62.5 and seed <= 75) and target_x > 0:
-            target_x = target_x - 1
-        if (seed > 75 and seed <= 87.5) and target_y < len(input) - 1:
-            target_y = target_y + 1
-        if (seed > 87.5 and seed <= 100) and target_y > 0:
-            target_y = target_y - 1
+            if (seed > 0 and seed <= 25) and target_x < len(board[0]) - 1:
+                target_x = target_x + 1
+            if (seed > 25 and seed <= 50) and target_x > 0:
+                target_x = target_x - 1
+            if (seed > 50 and seed <= 75) and target_y < len(board) - 1:
+                target_y = target_y + 1
+            if (seed > 75 and seed <= 100) and target_y > 0:
+                target_y = target_y - 1
+
     
-    # Walling
-    for y in range(len(input)):
-        for x in range(len(input[y])):
-            target = input[y][x]
+
+    # Walls
+    for y in range(len(board)):
+        for x in range(len(board[y])):
+            target = board[y][x]
             if target != blank_char:
                 if y > 0:
-                    if input[y-1][x] == blank_char:
-                        input[y][x] = wall_char
-                if y < len(input) - 1:
-                    if input[y+1][x] == blank_char:
-                        input[y][x] = wall_char
+                    if board[y-1][x] == blank_char:
+                        board[y][x] = wall_char
+                if y < len(board) - 1:
+                    if board[y+1][x] == blank_char:
+                        board[y][x] = wall_char
                 if x > 0:
-                    if input[y][x-1] == blank_char:
-                        input[y][x] = wall_char
-                if x < len(input[0]) - 1:
-                    if input[y][x+1] == blank_char:
-                        input[y][x] = wall_char
+                    if board[y][x-1] == blank_char:
+                        board[y][x] = wall_char
+                if x < len(board[0]) - 1:
+                    if board[y][x+1] == blank_char:
+                        board[y][x] = wall_char
+    # Pools
+    pools = []
+    orig_pools = []
+    for x in range(5): # create pools (up to 10)
+        point_x = random.randint(1, len(board[0]) - 2)
+        point_y = random.randint(1, len(board) - 2)
+        if board[point_y][point_x] == blank_char:
+            pools.append([point_y, point_x])
+            orig_pools.append([point_y, point_x])
+    
+    for x in range(8):
+        new_pools = []
+        for pool in orig_pools:
+            seed = random.randint(1, 100)
+
+            if (seed > 0 and seed <= 25) and board[pool[0] - 1][pool[1]] == blank_char:
+                pools.append([pool[0] - 1, pool[1]])
+                if (random.randint(1, 100) > 50):
+                    new_pools.append([pool[0] - 1, pool[1]])
+            if (seed > 25 and seed <= 50) and board[pool[0] + 1][pool[1]] == blank_char:
+                pools.append([pool[0] + 1, pool[1]])
+                if (random.randint(1, 100) > 50):
+                    new_pools.append([pool[0] + 1, pool[1]])
+            if (seed > 50 and seed <= 75) and board[pool[0]][pool[1] - 1] == blank_char:
+                pools.append([pool[0], pool[1] - 1])
+                if (random.randint(1, 100) > 50):
+                    new_pools.append([pool[0], pool[1] - 1])
+            if (seed > 75 and seed <= 100) and board[pool[0]][pool[1] + 1] == blank_char:
+                pools.append([pool[0], pool[1] + 1])
+                if (random.randint(1, 100) > 50):
+                    new_pools.append([pool[0], pool[1] + 1])
+        orig_pools = orig_pools + new_pools
+    
+    for pool in pools:
+        board[pool[0]][pool[1]] = water_char
+
     # Borders
-    for line in input:
+    for line in board:
         line[0] = border_char
         line[-1] = border_char
-    for x in range(len(input[0])):
-        input[0][x] = border_char
-        input[-1][x] = border_char
+    for x in range(len(board[0])):
+        board[0][x] = border_char
+        board[-1][x] = border_char
 
-    input[init_y][init_x] = player_char
-    return input
+    board[init_y][init_x] = player_char
+    return board
 
 def main():
     template = []

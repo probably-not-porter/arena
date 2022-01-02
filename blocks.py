@@ -27,12 +27,12 @@ blocks = {
     },
     "5": {
         "name": "Water",
-        "color": '\033[00m\033[34m',
+        "color": '\033[00m\033[36m',
         "char": "▓"
     },
     "6": {
         "name": "Water Edge",
         "color": '\033[00m\033[36m',
-        "char": "░"
+        "char": "▒"
     }
 }

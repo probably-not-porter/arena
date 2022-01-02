@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 
-def gen_arena(x_dim, y_dim):
+def gen_arena(x_dim, y_dim, cave_itr, pool_tries, pool_itr):
     board = []
 
     for y in range(y_dim):
@@ -20,7 +20,7 @@ def gen_arena(x_dim, y_dim):
         mod_count = 1
         target_x = init_x
         target_y = init_y
-        while mod_count < 10000:
+        while mod_count < cave_itr:
             mod_count += 1
             board[target_y][target_x] = 0 # blank square
             seed = random.randint(1, 100)
@@ -56,14 +56,14 @@ def gen_arena(x_dim, y_dim):
     # Pools
     pools = []
     orig_pools = []
-    for x in range(5): # create pools (up to 10)
+    for x in range(pool_tries):
         point_x = random.randint(1, len(board[0]) - 2)
         point_y = random.randint(1, len(board) - 2)
         if board[point_y][point_x] == 0:
             pools.append([point_y, point_x])
             orig_pools.append([point_y, point_x])
     
-    for x in range(8):
+    for x in range(pool_itr):
         new_pools = []
         for pool in orig_pools:
             seed = random.randint(1, 100)
@@ -88,6 +88,15 @@ def gen_arena(x_dim, y_dim):
     
     for pool in pools:
         board[pool[0]][pool[1]] = 5 # water block
+    for pool in pools:
+        if board[pool[0] - 1][pool[1]] != 5 and board[pool[0] - 1][pool[1]] != 6:
+            board[pool[0]][pool[1]] = 6 # water edge block
+        if board[pool[0] + 1][pool[1]] != 5 and board[pool[0] + 1][pool[1]] != 6:
+            board[pool[0]][pool[1]] = 6 # water edge block
+        if board[pool[0]][pool[1] - 1] != 5 and board[pool[0]][pool[1] - 1] != 6:
+            board[pool[0]][pool[1]] = 6 # water edge block
+        if board[pool[0]][pool[1] + 1] != 5 and board[pool[0]][pool[1] + 1] != 6:
+            board[pool[0]][pool[1]] = 6 # water edge block
 
     # Borders
     for line in board:

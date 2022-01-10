@@ -3,36 +3,36 @@ blocks = {
     "0": {
         "name": "Blank",
         "color": '\033[00m',
-        "char": " "
+        "char": "  "
     },
     "1": {
         "name": "Wall Edge",
         "color": '\033[00m\033[2m',
-        "char": "▒"
+        "char": "▒▒"
     },
     "2": {
         "name": "Wall Middle",
         "color": '\033[00m\033[2m',
-        "char": "█"
+        "char": "██"
     },
     "3": {
         "name": "Player",
         "color": '\033[00m\033[5m\033[35m',
-        "char": "$"
+        "char": "p1"
     },
     "4": {
         "name": "Border",
         "color": '\033[00m\033[31m',
-        "char": "%"
+        "char": "%%"
     },
     "5": {
         "name": "Water",
         "color": '\033[00m\033[36m',
-        "char": "▓"
+        "char": "▓▓"
     },
     "6": {
         "name": "Water Edge",
         "color": '\033[00m\033[36m',
-        "char": "▒"
+        "char": "▒▒"
     }
 }

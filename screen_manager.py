@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from blocks import blocks
+import mod_stat as MS
 
 ##########################################
 #  Map                      #  Stats     #
@@ -76,7 +77,23 @@ def render_dialogue(text, x,y):
 
     return out_arr
 
-def render_stats(text, x,y):
+def render_stats(stat_obj, x,y):
+    text = []
+    text.append(str(stat_obj["name"]))
+    if stat_obj["class"] != "" and stat_obj["race"] != "":
+        text.append("the " + str(stat_obj["race"]) + " " + str(stat_obj["class"]))
+        text.append("")
+    if stat_obj["str"] != "": 
+        text.append("Lv" + str(stat_obj["level"]) + " (" + str(stat_obj["xp-current"]) + "/" + str(stat_obj["xp-max"]) + " exp)")
+        text.append("Food: [" + "#"*int(stat_obj["food"]) + "]" )
+        text.append("HP: " + str(stat_obj["hp-current"]) + "/" + str(stat_obj["hp-max"]))
+        text.append("")
+    if stat_obj["str"] != "": text.append("Str: " + str(stat_obj["str"]) + " (" + MS.get_mod_str(stat_obj["str"]) + ")" )
+    if stat_obj["dex"] != "": text.append("Dex: " + str(stat_obj["dex"]) + " (" + MS.get_mod_str(stat_obj["dex"]) + ")" )
+    if stat_obj["con"] != "": text.append("Con: " + str(stat_obj["con"]) + " (" + MS.get_mod_str(stat_obj["con"]) + ")" )
+    if stat_obj["int"] != "": text.append("Int: " + str(stat_obj["int"]) + " (" + MS.get_mod_str(stat_obj["int"]) + ")" )
+    if stat_obj["wis"] != "": text.append("Wis: " + str(stat_obj["wis"]) + " (" + MS.get_mod_str(stat_obj["wis"]) + ")" )
+    if stat_obj["cha"] != "": text.append("Cha: " + str(stat_obj["cha"]) + " (" + MS.get_mod_str(stat_obj["cha"]) + ")" )
     out_arr = []
     for i in range(y):
         row = []

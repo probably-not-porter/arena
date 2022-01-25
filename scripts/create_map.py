@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import random
+import random, math
 
 def gen_arena(x_dim, y_dim, cave_itr, pool_tries, pool_itr):
+    x_dim = math.floor(x_dim / 2)
     board = []
 
     for y in range(y_dim):

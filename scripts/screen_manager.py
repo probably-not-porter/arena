@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from blocks import blocks
+from scripts.blocks import blocks
 
 ##########################################
 #  Map                      #  Stats     #
